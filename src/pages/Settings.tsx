@@ -23,7 +23,14 @@ export function Settings({ settings, onUpdate, trackerCards, onClearAll }: Props
   };
 
   return (
-    <div className="space-y-6 max-w-xl">
+    <div className="space-y-6 max-w-xl relative">
+      {/* Coming soon overlay */}
+      <div className="absolute inset-0 z-10 rounded-xl flex items-start justify-center pt-16 cursor-not-allowed" />
+      <div className="absolute top-4 left-1/2 -translate-x-1/2 z-20 flex items-center gap-2 bg-slate-800 border border-white/10 rounded-full px-4 py-1.5 text-slate-400 text-xs font-medium select-none">
+        <span className="w-1.5 h-1.5 rounded-full bg-yellow-400" />
+        Settings coming soon
+      </div>
+      <div className="opacity-30 pointer-events-none select-none">
       {/* Theme */}
       <div className="bg-white/5 border border-white/10 rounded-xl p-5 space-y-4">
         <h3 className="text-white font-semibold text-sm">Appearance</h3>
@@ -112,6 +119,7 @@ export function Settings({ settings, onUpdate, trackerCards, onClearAll }: Props
           </button>
         </div>
       </div>
+    </div>
     </div>
   );
 }
