@@ -19,7 +19,7 @@ import { useLocalStorage } from './hooks/useLocalStorage';
 import type { AppSettings, Bookmark, CompanyApplication, SearchString, Stats, TrackerCard } from './types';
 
 const DEFAULT_SETTINGS: AppSettings = {
-  theme: 'dark',
+  theme: 'light',
   defaultCountry: '',
   targetRole: 'Senior Frontend Engineer',
   targetCompensation: '',
@@ -45,6 +45,14 @@ export default function App() {
   const [stats, setStats] = useLocalStorage<Stats>('rh-stats', DEFAULT_STATS);
   const [bookmarks, setBookmarks] = useLocalStorage<Bookmark[]>('rh-bookmarks', []);
   const [companyApplications, setCompanyApplications] = useLocalStorage<Record<string, CompanyApplication>>('rh-company-apps', {});
+
+  // One-time migration: switch any cached dark default to the new light theme
+  useEffect(() => {
+    if (!localStorage.getItem('rh-theme-migrated-v1')) {
+      setSettings(s => ({ ...s, theme: 'light' }));
+      localStorage.setItem('rh-theme-migrated-v1', '1');
+    }
+  }, []);
 
   // Apply theme to document
   useEffect(() => {
@@ -225,7 +233,7 @@ export default function App() {
   };
 
   return (
-    <div className={`flex h-screen overflow-hidden ${settings.theme === 'dark' ? 'bg-navy-900 text-white' : 'bg-slate-100 text-slate-900'}`}>
+    <div className={`flex h-screen overflow-hidden ${settings.theme === 'dark' ? 'bg-navy-900 text-white' : 'bg-[#EDEEF8] text-slate-900'}`}>
       <Sidebar
         currentPage={currentPage}
         onNavigate={setCurrentPage}

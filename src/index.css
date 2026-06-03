@@ -54,57 +54,101 @@
 }
 
 /* ─── Light Mode Overrides ──────────────────────────────────────────────
-   All dark-mode utilities in the app are written without dark: prefixes.
-   These rules correct them when .dark is absent from <html>.
-   Scoped to .rh-content to avoid touching the always-dark sidebar.
-   Text overrides exclude elements that also carry a bg-* class (buttons
-   with coloured backgrounds keep their white labels).
+   Theme: Authjob-inspired — lavender background, white cards, pastel tags.
+   Scoped to .rh-content to avoid touching the sidebar (handled via Sidebar.tsx).
+   Text overrides exclude elements with a bg-* class (coloured buttons keep
+   their white labels).
 ──────────────────────────────────────────────────────────────────────── */
 
 /* Text colours */
-html:not(.dark) .rh-content .text-white:not([class*="bg-"]) { color: #0f172a; }
-html:not(.dark) .rh-content .text-slate-100:not([class*="bg-"]) { color: #0f172a; }
-html:not(.dark) .rh-content .text-slate-200:not([class*="bg-"]) { color: #1e293b; }
-html:not(.dark) .rh-content .text-slate-300:not([class*="bg-"]) { color: #334155; }
-html:not(.dark) .rh-content .text-slate-400:not([class*="bg-"]) { color: #475569; }
-html:not(.dark) .rh-content .text-slate-500:not([class*="bg-"]) { color: #64748b; }
-html:not(.dark) .rh-content .text-slate-600:not([class*="bg-"]) { color: #94a3b8; }
-html:not(.dark) .rh-content .text-slate-700:not([class*="bg-"]) { color: #cbd5e1; }
+html:not(.dark) .rh-content .text-white:not([class*="bg-"])    { color: #1e2040; }
+html:not(.dark) .rh-content .text-slate-100:not([class*="bg-"])  { color: #1e2040; }
+html:not(.dark) .rh-content .text-slate-200:not([class*="bg-"])  { color: #2e3060; }
+html:not(.dark) .rh-content .text-slate-300:not([class*="bg-"])  { color: #424470; }
+html:not(.dark) .rh-content .text-slate-400:not([class*="bg-"])  { color: #6b6c8a; }
+html:not(.dark) .rh-content .text-slate-500:not([class*="bg-"])  { color: #8b8ca8; }
+html:not(.dark) .rh-content .text-slate-600:not([class*="bg-"])  { color: #a8a9c0; }
+html:not(.dark) .rh-content .text-slate-700:not([class*="bg-"])  { color: #c8c9d8; }
 
-/* Inline code / search string text */
+/* Search string / code text */
 html:not(.dark) .rh-content .text-blue-300:not([class*="bg-"]) { color: #1e40af; }
-html:not(.dark) .rh-content pre { color: #1e40af; }
+html:not(.dark) .rh-content pre { color: #1e3a8a !important; }
 
-/* Glass card surfaces → solid white/slate */
-html:not(.dark) .rh-content .bg-white\/5  { background-color: #ffffff !important; }
-html:not(.dark) .rh-content .bg-white\/3  { background-color: #f8fafc !important; }
-html:not(.dark) .rh-content .bg-white\/8  { background-color: #f1f5f9 !important; }
-html:not(.dark) .rh-content .bg-white\/10 { background-color: #e2e8f0 !important; }
-html:not(.dark) .rh-content .bg-white\/12 { background-color: #e2e8f0 !important; }
-html:not(.dark) .rh-content .bg-white\/15 { background-color: #e2e8f0 !important; }
-html:not(.dark) .rh-content .bg-white\/20 { background-color: #cbd5e1 !important; }
+/* ── Card surfaces: white + shadow ───────────────────────────────────── */
+html:not(.dark) .rh-content .bg-white\/5 {
+  background-color: #ffffff !important;
+  box-shadow: 0 2px 10px rgba(100, 100, 180, 0.08), 0 1px 3px rgba(80, 80, 160, 0.05) !important;
+}
+html:not(.dark) .rh-content .bg-white\/3  { background-color: #f7f7fd !important; }
+html:not(.dark) .rh-content .bg-white\/8  { background-color: #f0f0fa !important; }
+html:not(.dark) .rh-content .bg-white\/10 { background-color: #e8e8f4 !important; }
+html:not(.dark) .rh-content .bg-white\/12 { background-color: #e4e4f0 !important; }
+html:not(.dark) .rh-content .bg-white\/15 { background-color: #e0e0ec !important; }
+html:not(.dark) .rh-content .bg-white\/20 { background-color: #d8d8e8 !important; }
 
 /* Hover states */
-html:not(.dark) .rh-content .hover\:bg-white\/8:hover  { background-color: #f1f5f9 !important; }
-html:not(.dark) .rh-content .hover\:bg-white\/10:hover { background-color: #e2e8f0 !important; }
-html:not(.dark) .rh-content .hover\:bg-white\/12:hover { background-color: #e2e8f0 !important; }
-html:not(.dark) .rh-content .hover\:bg-white\/15:hover { background-color: #e2e8f0 !important; }
-html:not(.dark) .rh-content .hover\:bg-white\/20:hover { background-color: #cbd5e1 !important; }
+html:not(.dark) .rh-content .hover\:bg-white\/8:hover  { background-color: #ededf8 !important; }
+html:not(.dark) .rh-content .hover\:bg-white\/10:hover { background-color: #e4e4f2 !important; }
+html:not(.dark) .rh-content .hover\:bg-white\/12:hover { background-color: #e0e0ee !important; }
+html:not(.dark) .rh-content .hover\:bg-white\/15:hover { background-color: #dcdcec !important; }
+html:not(.dark) .rh-content .hover\:bg-white\/20:hover { background-color: #d4d4e4 !important; }
 
-/* Code block background (navy-950/60 in dark mode) */
-html:not(.dark) .rh-content .bg-navy-950\/60 { background-color: #eff6ff !important; }
+/* Code / search string block */
+html:not(.dark) .rh-content .bg-navy-950\/60 {
+  background-color: #eef2ff !important;
+}
 
-/* Borders */
-html:not(.dark) .rh-content .border-white\/8  { border-color: #f1f5f9 !important; }
-html:not(.dark) .rh-content .border-white\/10 { border-color: #e2e8f0 !important; }
-html:not(.dark) .rh-content .border-white\/15 { border-color: #e2e8f0 !important; }
-html:not(.dark) .rh-content .border-white\/20 { border-color: #cbd5e1 !important; }
+/* ── Borders ─────────────────────────────────────────────────────────── */
+html:not(.dark) .rh-content .border-white\/8  { border-color: #e4e5f2 !important; }
+html:not(.dark) .rh-content .border-white\/10 { border-color: #dddff0 !important; }
+html:not(.dark) .rh-content .border-white\/15 { border-color: #d4d6ec !important; }
+html:not(.dark) .rh-content .border-white\/20 { border-color: #cbcde6 !important; }
+
+/* Hover border */
+html:not(.dark) .rh-content .hover\:border-white\/20:hover { border-color: #b8bbdc !important; }
+
+/* ── Accent colours: buttons and tags go pastel in light mode ─────────── */
+
+/* Blue accent (Copy button, LinkedIn button, bookmark active) */
+html:not(.dark) .rh-content .bg-blue-600\/20  { background-color: #e8eeff !important; }
+html:not(.dark) .rh-content .bg-blue-500\/10  { background-color: #eef2ff !important; }
+html:not(.dark) .rh-content .border-blue-500\/30 { border-color: #c7d2fe !important; }
+html:not(.dark) .rh-content .border-blue-500\/20 { border-color: #dde5ff !important; }
+html:not(.dark) .rh-content .text-blue-400:not([class*="bg-"]) { color: #3b5bdb !important; }
+html:not(.dark) .rh-content .text-blue-300:not([class*="bg-"]) { color: #1e40af !important; }
+html:not(.dark) .rh-content .hover\:bg-blue-600\/30:hover { background-color: #dde5ff !important; }
+html:not(.dark) .rh-content .hover\:bg-blue-500\/20:hover { background-color: #e8eeff !important; }
+
+/* Orange accent (Google / Search button) */
+html:not(.dark) .rh-content .bg-orange-500\/10  { background-color: #fff4ec !important; }
+html:not(.dark) .rh-content .border-orange-500\/20 { border-color: #fed7aa !important; }
+html:not(.dark) .rh-content .text-orange-400:not([class*="bg-"]) { color: #c2410c !important; }
+html:not(.dark) .rh-content .hover\:bg-orange-500\/20:hover { background-color: #ffe8d4 !important; }
+
+/* Green accent (High quality / emerald) */
+html:not(.dark) .rh-content .bg-emerald-400\/10  { background-color: #e8faf2 !important; }
+html:not(.dark) .rh-content .text-emerald-400:not([class*="bg-"]) { color: #047857 !important; }
+html:not(.dark) .rh-content .bg-emerald-500\/10  { background-color: #dcfce7 !important; }
+html:not(.dark) .rh-content .border-emerald-500\/20 { border-color: #a7f3d0 !important; }
+html:not(.dark) .rh-content .text-emerald-400 { color: #047857 !important; }
+
+/* Yellow accent (medium quality) */
+html:not(.dark) .rh-content .bg-yellow-400\/10  { background-color: #fefce8 !important; }
+html:not(.dark) .rh-content .text-yellow-400:not([class*="bg-"]) { color: #b45309 !important; }
+
+/* Red accent (difficulty hard / clear button) */
+html:not(.dark) .rh-content .bg-red-500\/10   { background-color: #fff1f2 !important; }
+html:not(.dark) .rh-content .border-red-500\/20 { border-color: #fecdd3 !important; }
+html:not(.dark) .rh-content .text-red-400:not([class*="bg-"]) { color: #be123c !important; }
+
+/* Purple accent (Posts tab badge) */
+html:not(.dark) .rh-content .bg-purple-500\/10  { background-color: #f5f3ff !important; }
+html:not(.dark) .rh-content .border-purple-500\/20 { border-color: #ddd6fe !important; }
+html:not(.dark) .rh-content .text-purple-400:not([class*="bg-"]) { color: #7c3aed !important; }
 
 /* Progress bar track */
-html:not(.dark) .rh-content .bg-white\/10.h-1 { background-color: #e2e8f0 !important; }
+html:not(.dark) .rh-content .bg-white\/10.h-1 { background-color: #e0e0ec !important; }
 
-/* Coloured accent panels (warning, info, etc.) — already work in both modes */
-
-/* Scrollbar in light mode */
-html:not(.dark) ::-webkit-scrollbar-thumb { background: #cbd5e1; }
-html:not(.dark) ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+/* ── Scrollbar ───────────────────────────────────────────────────────── */
+html:not(.dark) ::-webkit-scrollbar-thumb       { background: #c4c5d8; }
+html:not(.dark) ::-webkit-scrollbar-thumb:hover { background: #9a9bb4; }

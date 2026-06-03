@@ -50,17 +50,17 @@ export function Sidebar({ currentPage, onNavigate, isOpen, onClose, theme }: Pro
           ${isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
           ${isDark
             ? 'bg-navy-900 border-white/10'
-            : 'bg-slate-900 border-slate-700'
+            : 'bg-white border-slate-200 shadow-[2px_0_12px_rgba(100,100,180,0.08)]'
           }
         `}
       >
         {/* Logo */}
-        <div className={`flex items-center justify-between px-4 py-5 border-b ${isDark ? 'border-white/10' : 'border-slate-700'}`}>
+        <div className={`flex items-center justify-between px-4 py-5 border-b ${isDark ? 'border-white/10' : 'border-slate-200'}`}>
           <div className="flex items-center gap-2">
             <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-500 to-emerald-500 flex items-center justify-center text-sm font-bold text-white">
               R
             </div>
-            <span className="font-bold text-white text-lg font-sans">RemoteHunt</span>
+            <span className={`font-bold text-lg font-sans ${isDark ? 'text-white' : 'text-slate-900'}`}>RemoteHunt</span>
           </div>
           <button onClick={onClose} className="lg:hidden text-slate-400 hover:text-white p-1">
             <X size={18} />
@@ -79,23 +79,25 @@ export function Sidebar({ currentPage, onNavigate, isOpen, onClose, theme }: Pro
                   w-full flex items-center gap-3 px-3 py-2.5 rounded-lg mb-0.5 text-sm font-medium
                   transition-all duration-150 text-left group
                   ${isActive
-                    ? 'bg-blue-600/20 text-blue-400 border border-blue-500/30'
+                    ? isDark
+                      ? 'bg-blue-600/20 text-blue-400 border border-blue-500/30'
+                      : 'bg-blue-50 text-blue-600 border border-blue-200'
                     : isDark
                       ? 'text-slate-400 hover:text-slate-200 hover:bg-white/8'
-                      : 'text-slate-400 hover:text-white hover:bg-white/10'
+                      : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100 border border-transparent'
                   }
                 `}
               >
                 <span className="text-base">{item.emoji}</span>
                 <span className="flex-1">{item.label}</span>
-                {isActive && <ChevronRight size={14} className="text-blue-400" />}
+                {isActive && <ChevronRight size={14} className={isDark ? 'text-blue-400' : 'text-blue-600'} />}
               </button>
             );
           })}
         </nav>
 
         {/* Footer */}
-        <div className={`p-4 border-t ${isDark ? 'border-white/10' : 'border-slate-700'}`}>
+        <div className={`p-4 border-t ${isDark ? 'border-white/10' : 'border-slate-200'}`}>
           <p className="text-xs text-slate-500 text-center">Senior Frontend Engineer</p>
           <p className="text-xs text-slate-600 text-center">India → Worldwide</p>
         </div>
