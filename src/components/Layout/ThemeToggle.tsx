@@ -11,14 +11,19 @@ export function ThemeToggle({ theme, onToggle }: Props) {
   return (
     <button
       onClick={onToggle}
-      className={`p-2 rounded-lg transition-colors ${
-        isDark
-          ? 'hover:bg-white/10 text-slate-400 hover:text-slate-200'
-          : 'hover:bg-slate-100 text-slate-500 hover:text-slate-900'
-      }`}
-      aria-label="Toggle theme"
+      className="p-1.5 rounded-[6px] transition-colors"
+      style={{ color: isDark ? '#a3a3a3' : '#888888' }}
+      onMouseEnter={e => {
+        e.currentTarget.style.background = isDark ? 'rgba(255,255,255,0.08)' : '#f5f5f5';
+        e.currentTarget.style.color = isDark ? '#ededed' : '#171717';
+      }}
+      onMouseLeave={e => {
+        e.currentTarget.style.background = 'transparent';
+        e.currentTarget.style.color = isDark ? '#a3a3a3' : '#888888';
+      }}
+      aria-label={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
     >
-      {isDark ? <Sun size={18} /> : <Moon size={18} />}
+      {isDark ? <Sun size={17} /> : <Moon size={17} />}
     </button>
   );
 }

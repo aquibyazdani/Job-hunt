@@ -7,50 +7,86 @@ interface Props {
   favoritesCount: number;
 }
 
-export function StatsDashboard({ stats, trackerCards, favoritesCount }: Props) {
-  const applied = trackerCards.filter(c => c.status === 'applied').length;
-  const inProgress = trackerCards.filter(c => c.status === 'in_progress').length;
+const STAT_CONFIG = [
+  {
+    label: 'Copies Today',
+    icon: TrendingUp,
+    key: 'copyCount' as const,
+    accent: '#0070f3',
+    lightBg: '#eff6ff',
+    darkBg: 'rgba(0,112,243,0.12)',
+  },
+  {
+    label: 'Favorites',
+    icon: Star,
+    key: 'favorites' as const,
+    accent: '#d97706',
+    lightBg: '#fffbeb',
+    darkBg: 'rgba(217,119,6,0.12)',
+  },
+  {
+    label: 'Applications',
+    icon: Clipboard,
+    key: 'applications' as const,
+    accent: '#15803d',
+    lightBg: '#f0fdf4',
+    darkBg: 'rgba(21,128,61,0.12)',
+  },
+  {
+    label: 'Day Streak',
+    icon: Flame,
+    key: 'streak' as const,
+    accent: '#c2410c',
+    lightBg: '#fff7ed',
+    darkBg: 'rgba(194,65,12,0.12)',
+  },
+];
 
-  const statCards = [
-    {
-      label: 'Copies Today',
-      value: stats.copyCount,
-      icon: <TrendingUp size={16} />,
-      color: 'text-blue-400',
-      bg: 'bg-blue-500/10 border-blue-500/20',
-    },
-    {
-      label: 'Favorites',
-      value: favoritesCount,
-      icon: <Star size={16} />,
-      color: 'text-yellow-400',
-      bg: 'bg-yellow-500/10 border-yellow-500/20',
-    },
-    {
-      label: 'Applications',
-      value: applied + inProgress,
-      icon: <Clipboard size={16} />,
-      color: 'text-emerald-400',
-      bg: 'bg-emerald-500/10 border-emerald-500/20',
-    },
-    {
-      label: 'Day Streak',
-      value: stats.streak,
-      icon: <Flame size={16} />,
-      color: 'text-orange-400',
-      bg: 'bg-orange-500/10 border-orange-500/20',
-    },
-  ];
+export function StatsDashboard({ stats, trackerCards, favoritesCount }: Props) {
+  const applied     = trackerCards.filter(c => c.status === 'applied').length;
+  const inProgress  = trackerCards.filter(c => c.status === 'in_progress').length;
+
+  const values: Record<string, number> = {
+    copyCount:    stats.copyCount,
+    favorites:    favoritesCount,
+    applications: applied + inProgress,
+    streak:       stats.streak,
+  };
 
   return (
     <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-      {statCards.map(s => (
-        <div key={s.label} className={`${s.bg} border rounded-xl p-4 flex flex-col gap-2`}>
-          <div className={`${s.color}`}>{s.icon}</div>
-          <div className="text-2xl font-bold text-white">{s.value}</div>
-          <div className="text-xs text-slate-500">{s.label}</div>
-        </div>
-      ))}
+      {STAT_CONFIG.map(s => {
+        const Icon = s.icon;
+        const value = values[s.key];
+        return (
+          <div
+            key={s.label}
+            className="rh-card p-4 flex flex-col gap-2"
+          >
+            <div
+              className="w-7 h-7 rounded-[6px] flex items-center justify-center"
+              style={{ background: `var(--stat-bg, ${s.lightBg})`, color: s.accent }}
+            >
+              <style>{`.dark [data-stat="${s.key}"] { --stat-bg: ${s.darkBg}; }`}</style>
+              <span data-stat={s.key}>
+                <Icon size={15} style={{ color: s.accent }} />
+              </span>
+            </div>
+            <div
+              className="text-2xl font-semibold"
+              style={{ color: 'var(--rh-text-1)', letterSpacing: '-0.96px' }}
+            >
+              {value}
+            </div>
+            <div
+              className="text-xs"
+              style={{ color: 'var(--rh-text-3)' }}
+            >
+              {s.label}
+            </div>
+          </div>
+        );
+      })}
     </div>
   );
 }

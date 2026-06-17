@@ -7,52 +7,37 @@ import {
 import type { CompanyApplication } from '../types';
 import { REMOTE_COMPANIES } from '../data/remoteCompanies';
 
-const NOTICE_OPTIONS = [
-  'Immediate',
-  '15 days',
-  '30 days',
-  '45 days',
-  '60 days',
-  '90 days',
-  'Other',
-];
+const NOTICE_OPTIONS = ['Immediate', '15 days', '30 days', '45 days', '60 days', '90 days', 'Other'];
 
-interface ApplyModal {
-  companyName: string;
-  ctc: string;
-  noticePeriod: string;
-  notes: string;
-}
-
+interface ApplyModal { companyName: string; ctc: string; noticePeriod: string; notes: string; }
 interface Props {
   applications: Record<string, CompanyApplication>;
   onUpdate: (name: string, data: CompanyApplication) => void;
   onRemove: (name: string) => void;
 }
-
 type SortKey = 'name' | 'region' | 'appliedDate';
 
 export function RemoteCompanies({ applications, onUpdate, onRemove }: Props) {
-  const [search, setSearch] = useState('');
-  const [regionFilter, setRegionFilter] = useState('');
+  const [search, setSearch]               = useState('');
+  const [regionFilter, setRegionFilter]   = useState('');
   const [showAppliedOnly, setShowAppliedOnly] = useState(false);
-  const [sortKey, setSortKey] = useState<SortKey>('name');
-  const [sortAsc, setSortAsc] = useState(true);
-  const [modal, setModal] = useState<ApplyModal | null>(null);
+  const [sortKey, setSortKey]             = useState<SortKey>('name');
+  const [sortAsc, setSortAsc]             = useState(true);
+  const [modal, setModal]                 = useState<ApplyModal | null>(null);
 
   const appliedCount = Object.values(applications).filter(a => a.applied).length;
 
   const filtered = useMemo(() => {
     let list = REMOTE_COMPANIES.filter(c => {
       const q = search.toLowerCase();
-      const matchesSearch = !q || c.name.toLowerCase().includes(q) || c.region.toLowerCase().includes(q);
-      const matchesRegion = !regionFilter || c.region.toLowerCase().includes(regionFilter.toLowerCase());
-      const matchesApplied = !showAppliedOnly || applications[c.name]?.applied;
-      return matchesSearch && matchesRegion && matchesApplied;
+      return (
+        (!q || c.name.toLowerCase().includes(q) || c.region.toLowerCase().includes(q)) &&
+        (!regionFilter || c.region.toLowerCase().includes(regionFilter.toLowerCase())) &&
+        (!showAppliedOnly || applications[c.name]?.applied)
+      );
     });
-
-    list = [...list].sort((a, b) => {
-      if (sortKey === 'name') return sortAsc ? a.name.localeCompare(b.name) : b.name.localeCompare(a.name);
+    return [...list].sort((a, b) => {
+      if (sortKey === 'name')   return sortAsc ? a.name.localeCompare(b.name) : b.name.localeCompare(a.name);
       if (sortKey === 'region') return sortAsc ? a.region.localeCompare(b.region) : b.region.localeCompare(a.region);
       if (sortKey === 'appliedDate') {
         const da = applications[a.name]?.appliedDate || '';
@@ -61,8 +46,6 @@ export function RemoteCompanies({ applications, onUpdate, onRemove }: Props) {
       }
       return 0;
     });
-
-    return list;
   }, [search, regionFilter, showAppliedOnly, sortKey, sortAsc, applications]);
 
   const toggleSort = (key: SortKey) => {
@@ -72,17 +55,12 @@ export function RemoteCompanies({ applications, onUpdate, onRemove }: Props) {
 
   const SortIcon = ({ k }: { k: SortKey }) =>
     sortKey === k
-      ? sortAsc ? <ChevronUp size={12} className="inline ml-0.5" /> : <ChevronDown size={12} className="inline ml-0.5" />
+      ? sortAsc ? <ChevronUp size={11} className="inline ml-0.5" /> : <ChevronDown size={11} className="inline ml-0.5" />
       : null;
 
   const openApplyModal = (name: string) => {
     const existing = applications[name];
-    setModal({
-      companyName: name,
-      ctc: existing?.ctc || '',
-      noticePeriod: existing?.noticePeriod || '30 days',
-      notes: existing?.notes || '',
-    });
+    setModal({ companyName: name, ctc: existing?.ctc || '', noticePeriod: existing?.noticePeriod || '30 days', notes: existing?.notes || '' });
   };
 
   const saveApplication = () => {
@@ -103,73 +81,70 @@ export function RemoteCompanies({ applications, onUpdate, onRemove }: Props) {
 
   const regionOptions = useMemo(() => {
     const regions = new Set<string>();
-    REMOTE_COMPANIES.forEach(c => {
-      c.region.split(',').forEach(r => regions.add(r.trim()));
-    });
+    REMOTE_COMPANIES.forEach(c => c.region.split(',').forEach(r => regions.add(r.trim())));
     return Array.from(regions).sort();
   }, []);
 
   return (
     <div className="space-y-5">
       {/* Stats row */}
-      <div className="flex flex-wrap gap-3 items-center">
-        <div className="flex items-center gap-2 bg-emerald-500/10 border border-emerald-500/20 rounded-xl px-4 py-2">
-          <CheckCircle2 size={15} className="text-emerald-400" />
-          <span className="text-emerald-400 font-semibold text-sm">{appliedCount}</span>
-          <span className="text-emerald-600 text-xs">applied</span>
-        </div>
-        <div className="flex items-center gap-2 bg-white/5 border border-white/10 rounded-xl px-4 py-2">
-          <Building2 size={15} className="text-slate-400" />
-          <span className="text-white font-semibold text-sm">{REMOTE_COMPANIES.length}</span>
-          <span className="text-slate-500 text-xs">total companies</span>
-        </div>
-        <div className="flex items-center gap-2 bg-white/5 border border-white/10 rounded-xl px-4 py-2">
-          <Globe size={15} className="text-blue-400" />
-          <span className="text-blue-400 font-semibold text-sm">{filtered.length}</span>
-          <span className="text-slate-500 text-xs">showing</span>
-        </div>
+      <div className="flex flex-wrap gap-2.5 items-center">
+        {[
+          { icon: <CheckCircle2 size={14} />, value: appliedCount, label: 'applied', color: '#15803d', bg: '#f0fdf4', border: '#bbf7d0' },
+          { icon: <Building2 size={14} />, value: REMOTE_COMPANIES.length, label: 'total companies', color: 'var(--rh-text-2)', bg: 'var(--rh-surface)', border: 'var(--rh-border)' },
+          { icon: <Globe size={14} />, value: filtered.length, label: 'showing', color: '#0070f3', bg: '#eff6ff', border: '#bfdbfe' },
+        ].map((s, i) => (
+          <div
+            key={i}
+            className="flex items-center gap-2 rounded-[8px] px-3.5 py-2 text-sm border"
+            style={{ background: s.bg, borderColor: s.border, color: s.color }}
+          >
+            {s.icon}
+            <span className="font-semibold">{s.value}</span>
+            <span className="text-xs opacity-75">{s.label}</span>
+          </div>
+        ))}
       </div>
 
       {/* Filters */}
       <div className="flex flex-wrap gap-2 items-center">
-        {/* Search */}
         <div className="relative flex-1 min-w-[200px] max-w-sm">
-          <Search size={13} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 pointer-events-none" />
+          <Search size={13} className="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" style={{ color: 'var(--rh-text-3)' }} />
           <input
             type="text"
             value={search}
             onChange={e => setSearch(e.target.value)}
             placeholder="Search company or region..."
-            className="w-full pl-8 pr-3 py-2 bg-slate-800 border border-slate-600 rounded-xl text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-blue-500"
+            className="rh-input pl-8 pr-8"
+            style={{ height: '36px' }}
           />
           {search && (
-            <button onClick={() => setSearch('')} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300">
-              <X size={13} />
+            <button onClick={() => setSearch('')} className="absolute right-2.5 top-1/2 -translate-y-1/2" style={{ color: 'var(--rh-text-3)' }}>
+              <X size={12} />
             </button>
           )}
         </div>
 
-        {/* Region filter */}
         <div className="relative">
           <select
             value={regionFilter}
             onChange={e => setRegionFilter(e.target.value)}
-            className="appearance-none bg-slate-800 border border-slate-600 text-slate-200 text-sm rounded-xl pl-3 pr-7 py-2 focus:outline-none focus:border-blue-500 cursor-pointer"
+            className="rh-select"
+            style={{ height: '36px', paddingTop: '0', paddingBottom: '0' }}
           >
             <option value="">All regions</option>
-            {regionOptions.map(r => <option key={r} value={r} className="bg-slate-800">{r}</option>)}
+            {regionOptions.map(r => <option key={r} value={r}>{r}</option>)}
           </select>
-          <ChevronDown size={12} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
+          <ChevronDown size={11} className="absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none" style={{ color: 'var(--rh-text-3)' }} />
         </div>
 
-        {/* Applied only toggle */}
         <button
           onClick={() => setShowAppliedOnly(p => !p)}
-          className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-sm border transition-colors ${
-            showAppliedOnly
-              ? 'bg-emerald-500/20 border-emerald-500/30 text-emerald-400'
-              : 'bg-white/5 border-white/10 text-slate-400 hover:text-slate-200'
-          }`}
+          className="flex items-center gap-1.5 px-3 py-1.5 rounded-[6px] text-sm border transition-colors"
+          style={showAppliedOnly
+            ? { background: '#f0fdf4', borderColor: '#bbf7d0', color: '#15803d' }
+            : { background: 'var(--rh-surface)', borderColor: 'var(--rh-border)', color: 'var(--rh-text-2)' }
+          }
         >
           <CheckCircle2 size={13} />
           Applied only
@@ -177,38 +152,39 @@ export function RemoteCompanies({ applications, onUpdate, onRemove }: Props) {
       </div>
 
       {/* Table */}
-      <div className="overflow-x-auto rounded-xl border border-white/10">
+      <div
+        className="overflow-x-auto rounded-[8px] border"
+        style={{ borderColor: 'var(--rh-border)' }}
+      >
         <table className="w-full text-sm">
           <thead>
-            <tr className="bg-white/5 border-b border-white/10">
-              <th className="text-left px-4 py-3 w-10">
-                <span className="text-slate-500 text-xs font-medium">✓</span>
+            <tr style={{ background: 'var(--rh-surface-2)', borderBottom: '1px solid var(--rh-border)' }}>
+              <th className="text-left px-4 py-2.5 w-10">
+                <span className="text-xs font-medium" style={{ color: 'var(--rh-text-3)', fontFamily: '"JetBrains Mono", monospace' }}>✓</span>
               </th>
+              {[
+                { label: 'Company', key: 'name' as SortKey, cls: '' },
+                { label: 'Region',  key: 'region' as SortKey, cls: 'hidden md:table-cell' },
+              ].map(col => (
+                <th
+                  key={col.key}
+                  className={`text-left px-4 py-2.5 font-medium text-xs cursor-pointer select-none ${col.cls}`}
+                  style={{ color: 'var(--rh-text-3)', fontFamily: '"JetBrains Mono", monospace' }}
+                  onClick={() => toggleSort(col.key)}
+                >
+                  {col.label} <SortIcon k={col.key} />
+                </th>
+              ))}
+              <th className="text-left px-4 py-2.5 font-medium text-xs hidden lg:table-cell" style={{ color: 'var(--rh-text-3)', fontFamily: '"JetBrains Mono", monospace' }}>CTC</th>
+              <th className="text-left px-4 py-2.5 font-medium text-xs hidden lg:table-cell" style={{ color: 'var(--rh-text-3)', fontFamily: '"JetBrains Mono", monospace' }}>Notice</th>
               <th
-                className="text-left px-4 py-3 text-slate-400 font-medium text-xs cursor-pointer hover:text-slate-200 select-none"
-                onClick={() => toggleSort('name')}
-              >
-                Company <SortIcon k="name" />
-              </th>
-              <th
-                className="text-left px-4 py-3 text-slate-400 font-medium text-xs cursor-pointer hover:text-slate-200 select-none hidden md:table-cell"
-                onClick={() => toggleSort('region')}
-              >
-                Region <SortIcon k="region" />
-              </th>
-              <th className="text-left px-4 py-3 text-slate-400 font-medium text-xs hidden lg:table-cell">
-                CTC
-              </th>
-              <th className="text-left px-4 py-3 text-slate-400 font-medium text-xs hidden lg:table-cell">
-                Notice Period
-              </th>
-              <th
-                className="text-left px-4 py-3 text-slate-400 font-medium text-xs cursor-pointer hover:text-slate-200 select-none hidden xl:table-cell"
+                className="text-left px-4 py-2.5 font-medium text-xs hidden xl:table-cell cursor-pointer select-none"
+                style={{ color: 'var(--rh-text-3)', fontFamily: '"JetBrains Mono", monospace' }}
                 onClick={() => toggleSort('appliedDate')}
               >
                 Applied On <SortIcon k="appliedDate" />
               </th>
-              <th className="text-right px-4 py-3 text-slate-400 font-medium text-xs">Links</th>
+              <th className="text-right px-4 py-2.5 font-medium text-xs" style={{ color: 'var(--rh-text-3)', fontFamily: '"JetBrains Mono", monospace' }}>Links</th>
             </tr>
           </thead>
           <tbody>
@@ -216,128 +192,121 @@ export function RemoteCompanies({ applications, onUpdate, onRemove }: Props) {
               {filtered.map((company, i) => {
                 const app = applications[company.name];
                 const isApplied = app?.applied;
-
                 return (
                   <motion.tr
                     key={company.name}
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
-                    transition={{ delay: Math.min(i * 0.01, 0.3) }}
-                    className={`border-b border-white/5 transition-colors hover:bg-white/3 ${
-                      isApplied ? 'bg-emerald-500/5' : ''
-                    }`}
+                    transition={{ delay: Math.min(i * 0.008, 0.25) }}
+                    className="transition-colors"
+                    style={{
+                      borderBottom: '1px solid var(--rh-border)',
+                      background: isApplied ? 'rgba(21,128,61,0.04)' : 'var(--rh-surface)',
+                    }}
+                    onMouseEnter={e => (e.currentTarget.style.background = isApplied ? 'rgba(21,128,61,0.07)' : 'var(--rh-surface-2)')}
+                    onMouseLeave={e => (e.currentTarget.style.background = isApplied ? 'rgba(21,128,61,0.04)' : 'var(--rh-surface)')}
                   >
-                    {/* Checkbox */}
-                    <td className="px-4 py-3">
+                    <td className="px-4 py-2.5">
                       <button
                         onClick={() => isApplied ? unapply(company.name) : openApplyModal(company.name)}
-                        className={`transition-colors ${
-                          isApplied
-                            ? 'text-emerald-400 hover:text-red-400'
-                            : 'text-slate-600 hover:text-emerald-400'
-                        }`}
+                        className="transition-colors"
+                        style={{ color: isApplied ? '#15803d' : 'var(--rh-border-strong)' }}
+                        onMouseEnter={e => (e.currentTarget.style.color = isApplied ? '#b91c1c' : '#15803d')}
+                        onMouseLeave={e => (e.currentTarget.style.color = isApplied ? '#15803d' : 'var(--rh-border-strong)')}
                         title={isApplied ? 'Click to remove' : 'Mark as applied'}
                       >
-                        {isApplied
-                          ? <CheckCircle2 size={18} />
-                          : <Circle size={18} />
-                        }
+                        {isApplied ? <CheckCircle2 size={17} /> : <Circle size={17} />}
                       </button>
                     </td>
 
-                    {/* Company name */}
-                    <td className="px-4 py-3">
+                    <td className="px-4 py-2.5">
                       <div className="flex flex-col gap-0.5">
-                        <span className={`font-medium ${isApplied ? 'text-emerald-300' : 'text-white'}`}>
+                        <span
+                          className="font-medium text-sm"
+                          style={{ color: isApplied ? '#15803d' : 'var(--rh-text-1)', letterSpacing: '-0.28px' }}
+                        >
                           {company.name}
                         </span>
-                        {/* Region shown inline on mobile */}
-                        <span className="text-slate-500 text-xs md:hidden">{company.region}</span>
-                        {/* CTC + Notice on mobile */}
+                        <span className="text-xs md:hidden" style={{ color: 'var(--rh-text-3)' }}>
+                          {company.region}
+                        </span>
                         {isApplied && (
-                          <div className="flex flex-wrap gap-1 mt-1 lg:hidden">
+                          <div className="flex flex-wrap gap-1 mt-0.5 lg:hidden">
                             {app.ctc && (
-                              <span className="text-xs bg-blue-500/10 text-blue-300 border border-blue-500/20 px-1.5 py-0.5 rounded-full">
+                              <span className="text-xs bg-blue-50 text-blue-700 border border-blue-200 px-1.5 py-0.5 rounded-full dark:bg-blue-500/10 dark:text-blue-300 dark:border-blue-500/20">
                                 {app.ctc}
                               </span>
                             )}
                             {app.noticePeriod && (
-                              <span className="text-xs bg-purple-500/10 text-purple-300 border border-purple-500/20 px-1.5 py-0.5 rounded-full">
+                              <span className="text-xs bg-purple-50 text-purple-700 border border-purple-200 px-1.5 py-0.5 rounded-full dark:bg-purple-500/10 dark:text-purple-300 dark:border-purple-500/20">
                                 {app.noticePeriod}
                               </span>
                             )}
                           </div>
                         )}
                         {isApplied && app.notes && (
-                          <span className="text-xs text-slate-600 italic truncate max-w-[200px]">"{app.notes}"</span>
+                          <span className="text-xs italic truncate max-w-[200px]" style={{ color: 'var(--rh-text-3)' }}>
+                            "{app.notes}"
+                          </span>
                         )}
                       </div>
                     </td>
 
-                    {/* Region */}
-                    <td className="px-4 py-3 hidden md:table-cell">
-                      <span className="text-slate-400 text-xs">{company.region}</span>
+                    <td className="px-4 py-2.5 hidden md:table-cell">
+                      <span className="text-xs" style={{ color: 'var(--rh-text-3)' }}>{company.region}</span>
                     </td>
 
-                    {/* CTC */}
-                    <td className="px-4 py-3 hidden lg:table-cell">
+                    <td className="px-4 py-2.5 hidden lg:table-cell">
                       {isApplied && app.ctc ? (
                         <button
                           onClick={() => openApplyModal(company.name)}
-                          className="text-blue-300 text-xs bg-blue-500/10 border border-blue-500/20 px-2 py-1 rounded-lg hover:bg-blue-500/20 transition-colors"
+                          className="text-xs px-2 py-0.5 rounded-full border transition-colors"
+                          style={{ background: '#eff6ff', color: '#1d4ed8', borderColor: '#bfdbfe' }}
                         >
                           {app.ctc}
                         </button>
                       ) : isApplied ? (
-                        <button
-                          onClick={() => openApplyModal(company.name)}
-                          className="text-slate-600 text-xs hover:text-slate-400 transition-colors"
-                        >
+                        <button onClick={() => openApplyModal(company.name)} className="text-xs" style={{ color: 'var(--rh-text-3)' }}>
                           + Add
                         </button>
                       ) : (
-                        <span className="text-slate-700 text-xs">—</span>
+                        <span className="text-xs" style={{ color: 'var(--rh-border-strong)' }}>—</span>
                       )}
                     </td>
 
-                    {/* Notice Period */}
-                    <td className="px-4 py-3 hidden lg:table-cell">
+                    <td className="px-4 py-2.5 hidden lg:table-cell">
                       {isApplied && app.noticePeriod ? (
                         <button
                           onClick={() => openApplyModal(company.name)}
-                          className="text-purple-300 text-xs bg-purple-500/10 border border-purple-500/20 px-2 py-1 rounded-lg hover:bg-purple-500/20 transition-colors"
+                          className="text-xs px-2 py-0.5 rounded-full border transition-colors"
+                          style={{ background: '#faf5ff', color: '#7c3aed', borderColor: '#e9d5ff' }}
                         >
                           {app.noticePeriod}
                         </button>
                       ) : isApplied ? (
-                        <button
-                          onClick={() => openApplyModal(company.name)}
-                          className="text-slate-600 text-xs hover:text-slate-400 transition-colors"
-                        >
+                        <button onClick={() => openApplyModal(company.name)} className="text-xs" style={{ color: 'var(--rh-text-3)' }}>
                           + Add
                         </button>
                       ) : (
-                        <span className="text-slate-700 text-xs">—</span>
+                        <span className="text-xs" style={{ color: 'var(--rh-border-strong)' }}>—</span>
                       )}
                     </td>
 
-                    {/* Applied date */}
-                    <td className="px-4 py-3 hidden xl:table-cell">
-                      <span className="text-slate-500 text-xs">
+                    <td className="px-4 py-2.5 hidden xl:table-cell">
+                      <span className="text-xs" style={{ color: 'var(--rh-text-3)' }}>
                         {isApplied && app.appliedDate ? app.appliedDate : '—'}
                       </span>
                     </td>
 
-                    {/* Links */}
-                    <td className="px-4 py-3">
+                    <td className="px-4 py-2.5">
                       <div className="flex items-center gap-1.5 justify-end">
                         <a
                           href={company.linkedin}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="text-xs px-2 py-1 bg-blue-500/10 hover:bg-blue-500/20 text-blue-300 border border-blue-500/20 rounded-lg transition-colors flex items-center gap-1"
-                          title="View jobs on LinkedIn"
+                          className="text-xs px-2 py-0.5 rounded-[6px] border transition-colors flex items-center gap-1"
+                          style={{ background: '#eff6ff', color: '#1d4ed8', borderColor: '#bfdbfe' }}
                         >
                           <ExternalLink size={10} />
                           <span className="hidden sm:inline">Jobs</span>
@@ -346,8 +315,10 @@ export function RemoteCompanies({ applications, onUpdate, onRemove }: Props) {
                           href={company.website}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="text-slate-500 hover:text-slate-300 p-1 rounded transition-colors"
-                          title="Visit website"
+                          className="p-1 rounded transition-colors"
+                          style={{ color: 'var(--rh-text-3)' }}
+                          onMouseEnter={e => (e.currentTarget.style.color = 'var(--rh-text-1)')}
+                          onMouseLeave={e => (e.currentTarget.style.color = 'var(--rh-text-3)')}
                         >
                           <Globe size={13} />
                         </a>
@@ -361,7 +332,7 @@ export function RemoteCompanies({ applications, onUpdate, onRemove }: Props) {
         </table>
 
         {filtered.length === 0 && (
-          <div className="py-12 text-center text-slate-500 text-sm">
+          <div className="py-12 text-center text-sm" style={{ color: 'var(--rh-text-3)' }}>
             No companies match your filters.
           </div>
         )}
@@ -375,35 +346,48 @@ export function RemoteCompanies({ applications, onUpdate, onRemove }: Props) {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="fixed inset-0 bg-black/70 z-50"
+              className="fixed inset-0 bg-black/40 z-50"
               onClick={() => setModal(null)}
             />
             <motion.div
-              initial={{ opacity: 0, scale: 0.95, y: -16 }}
+              initial={{ opacity: 0, scale: 0.97, y: -12 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.95, y: -16 }}
+              exit={{ opacity: 0, scale: 0.97, y: -12 }}
               transition={{ type: 'spring', stiffness: 400, damping: 30 }}
-              className="fixed top-[20%] left-1/2 -translate-x-1/2 w-full max-w-md mx-4 z-50"
+              className="fixed top-[18%] left-1/2 -translate-x-1/2 w-full max-w-md px-4 z-50"
             >
-              <div className="bg-slate-900 border border-slate-600 rounded-2xl shadow-2xl overflow-hidden">
+              <div
+                className="rounded-xl overflow-hidden"
+                style={{
+                  background: 'var(--rh-surface)',
+                  border: '1px solid var(--rh-border)',
+                  boxShadow: 'var(--rh-shadow-modal)',
+                }}
+              >
                 {/* Header */}
-                <div className="flex items-center justify-between px-5 py-4 border-b border-slate-700">
+                <div className="flex items-center justify-between px-5 py-4 border-b" style={{ borderColor: 'var(--rh-border)' }}>
                   <div>
-                    <h3 className="text-white font-semibold">Mark as Applied</h3>
-                    <p className="text-slate-400 text-xs mt-0.5">{modal.companyName}</p>
+                    <h3 className="font-semibold text-sm" style={{ color: 'var(--rh-text-1)', letterSpacing: '-0.4px' }}>
+                      Mark as Applied
+                    </h3>
+                    <p className="text-xs mt-0.5" style={{ color: 'var(--rh-text-3)' }}>{modal.companyName}</p>
                   </div>
-                  <button onClick={() => setModal(null)} className="text-slate-500 hover:text-slate-300 p-1 rounded">
-                    <X size={18} />
+                  <button
+                    onClick={() => setModal(null)}
+                    className="p-1 rounded transition-colors"
+                    style={{ color: 'var(--rh-text-3)' }}
+                    onMouseEnter={e => (e.currentTarget.style.color = 'var(--rh-text-1)')}
+                    onMouseLeave={e => (e.currentTarget.style.color = 'var(--rh-text-3)')}
+                  >
+                    <X size={17} />
                   </button>
                 </div>
 
                 {/* Form */}
                 <div className="p-5 space-y-4">
-                  {/* CTC */}
                   <div>
-                    <label className="text-slate-300 text-xs font-medium block mb-1.5">
-                      CTC / Compensation Offered
-                      <span className="text-slate-500 font-normal ml-1">(optional)</span>
+                    <label className="text-xs font-medium block mb-1.5" style={{ color: 'var(--rh-text-2)' }}>
+                      CTC / Compensation <span style={{ color: 'var(--rh-text-3)', fontWeight: 400 }}>(optional)</span>
                     </label>
                     <input
                       autoFocus
@@ -411,25 +395,24 @@ export function RemoteCompanies({ applications, onUpdate, onRemove }: Props) {
                       value={modal.ctc}
                       onChange={e => setModal(m => m ? { ...m, ctc: e.target.value } : m)}
                       placeholder="e.g. $120k/yr, ₹40 LPA, €80k"
-                      className="w-full bg-slate-800 border border-slate-600 text-slate-100 text-sm rounded-lg px-3 py-2 focus:outline-none focus:border-blue-500 placeholder-slate-500"
+                      className="rh-input"
                     />
                   </div>
 
-                  {/* Notice period */}
                   <div>
-                    <label className="text-slate-300 text-xs font-medium block mb-1.5">
-                      Your Notice Period
+                    <label className="text-xs font-medium block mb-1.5" style={{ color: 'var(--rh-text-2)' }}>
+                      Notice Period
                     </label>
-                    <div className="flex gap-2 flex-wrap">
+                    <div className="flex gap-1.5 flex-wrap">
                       {NOTICE_OPTIONS.map(opt => (
                         <button
                           key={opt}
                           onClick={() => setModal(m => m ? { ...m, noticePeriod: opt } : m)}
-                          className={`px-3 py-1.5 rounded-lg text-xs font-medium border transition-colors ${
-                            modal.noticePeriod === opt
-                              ? 'bg-purple-600 border-purple-500 text-white'
-                              : 'bg-slate-800 border-slate-600 text-slate-400 hover:text-slate-200 hover:border-slate-500'
-                          }`}
+                          className="px-3 py-1 rounded-pill-sm text-xs font-medium border transition-colors"
+                          style={modal.noticePeriod === opt
+                            ? { background: '#171717', color: '#ffffff', borderColor: '#171717' }
+                            : { background: 'var(--rh-surface-2)', color: 'var(--rh-text-2)', borderColor: 'var(--rh-border)' }
+                          }
                         >
                           {opt}
                         </button>
@@ -439,39 +422,38 @@ export function RemoteCompanies({ applications, onUpdate, onRemove }: Props) {
                       <input
                         type="text"
                         placeholder="e.g. 3 months"
-                        className="w-full mt-2 bg-slate-800 border border-slate-600 text-slate-100 text-sm rounded-lg px-3 py-2 focus:outline-none focus:border-blue-500 placeholder-slate-500"
+                        className="rh-input mt-2"
                         onChange={e => setModal(m => m ? { ...m, noticePeriod: e.target.value } : m)}
                       />
                     )}
                   </div>
 
-                  {/* Notes */}
                   <div>
-                    <label className="text-slate-300 text-xs font-medium block mb-1.5">
-                      Notes
-                      <span className="text-slate-500 font-normal ml-1">(optional)</span>
+                    <label className="text-xs font-medium block mb-1.5" style={{ color: 'var(--rh-text-2)' }}>
+                      Notes <span style={{ color: 'var(--rh-text-3)', fontWeight: 400 }}>(optional)</span>
                     </label>
                     <textarea
                       value={modal.notes}
                       onChange={e => setModal(m => m ? { ...m, notes: e.target.value } : m)}
-                      placeholder="e.g. Reached out via LinkedIn, waiting for reply..."
+                      placeholder="e.g. Reached out via LinkedIn..."
                       rows={2}
-                      className="w-full bg-slate-800 border border-slate-600 text-slate-200 text-sm rounded-lg px-3 py-2 focus:outline-none focus:border-blue-500 placeholder-slate-500 resize-none font-sans"
+                      className="rh-textarea"
                     />
                   </div>
 
-                  {/* Actions */}
                   <div className="flex gap-2 pt-1">
                     <button
                       onClick={saveApplication}
-                      className="flex-1 flex items-center justify-center gap-1.5 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white text-sm font-medium rounded-xl transition-colors"
+                      className="flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-[6px] text-sm font-medium transition-colors"
+                      style={{ background: '#171717', color: '#ffffff' }}
                     >
-                      <CheckCircle2 size={15} />
+                      <CheckCircle2 size={14} />
                       Save Application
                     </button>
                     <button
                       onClick={() => setModal(null)}
-                      className="px-4 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-300 text-sm rounded-xl border border-slate-600 transition-colors"
+                      className="px-4 py-2.5 rounded-[6px] text-sm border transition-colors"
+                      style={{ background: 'var(--rh-surface-2)', color: 'var(--rh-text-2)', borderColor: 'var(--rh-border)' }}
                     >
                       Cancel
                     </button>

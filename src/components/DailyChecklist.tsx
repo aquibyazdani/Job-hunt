@@ -27,38 +27,45 @@ export function DailyChecklist() {
   });
 
   const completedToday = data.date === today ? data.completed : [];
-
   const toggle = (id: string) => {
     const newCompleted = completedToday.includes(id)
       ? completedToday.filter(i => i !== id)
       : [...completedToday, id];
     setData({ date: today, completed: newCompleted });
   };
-
   const reset = () => setData({ date: today, completed: [] });
 
   const count = completedToday.length;
   const total = DEFAULT_TASKS.length;
+  const progress = (count / total) * 100;
 
   return (
-    <div className="bg-white/5 border border-white/10 rounded-xl overflow-hidden">
+    <div className="rh-card overflow-hidden">
       <button
         onClick={() => setIsOpen(p => !p)}
-        className="w-full flex items-center gap-3 px-4 py-3 hover:bg-white/5 transition-colors"
+        className="w-full flex items-center gap-3 px-4 py-3.5 transition-colors"
+        style={{ color: 'var(--rh-text-1)' }}
+        onMouseEnter={e => (e.currentTarget.style.background = 'var(--rh-surface-2)')}
+        onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}
       >
         <span className="text-base">✅</span>
         <div className="flex-1 text-left">
-          <span className="text-white text-sm font-medium">Daily Checklist</span>
-          <div className="w-full bg-white/10 rounded-full h-1 mt-1.5">
+          <span className="text-sm font-medium">Daily Checklist</span>
+          <div
+            className="w-full rounded-full h-1 mt-1.5"
+            style={{ background: 'var(--rh-border)' }}
+          >
             <div
-              className="bg-emerald-500 h-1 rounded-full transition-all duration-300"
-              style={{ width: `${(count / total) * 100}%` }}
+              className="h-1 rounded-full transition-all duration-300"
+              style={{ width: `${progress}%`, background: '#15803d' }}
             />
           </div>
         </div>
-        <span className="text-xs text-slate-500">{count}/{total}</span>
+        <span className="text-xs" style={{ color: 'var(--rh-text-3)', fontFamily: '"JetBrains Mono", monospace' }}>
+          {count}/{total}
+        </span>
         <motion.div animate={{ rotate: isOpen ? 180 : 0 }} transition={{ duration: 0.2 }}>
-          <ChevronDown size={14} className="text-slate-500" />
+          <ChevronDown size={14} style={{ color: 'var(--rh-text-3)' }} />
         </motion.div>
       </button>
 
@@ -70,27 +77,40 @@ export function DailyChecklist() {
             exit={{ height: 0 }}
             className="overflow-hidden"
           >
-            <div className="px-4 pb-4 space-y-2">
-              {DEFAULT_TASKS.map(task => {
-                const done = completedToday.includes(task.id);
-                return (
-                  <button
-                    key={task.id}
-                    onClick={() => toggle(task.id)}
-                    className="w-full flex items-center gap-3 text-left group"
-                  >
-                    <span className={done ? 'text-emerald-400' : 'text-slate-600 group-hover:text-slate-400'}>
-                      {done ? <CheckSquare size={16} /> : <Square size={16} />}
-                    </span>
-                    <span className={`text-sm transition-colors ${done ? 'text-slate-600 line-through' : 'text-slate-300 group-hover:text-white'}`}>
-                      {task.text}
-                    </span>
-                  </button>
-                );
-              })}
+            <div
+              className="px-4 pb-4 space-y-1.5 border-t"
+              style={{ borderColor: 'var(--rh-border)' }}
+            >
+              <div className="pt-3 space-y-1">
+                {DEFAULT_TASKS.map(task => {
+                  const done = completedToday.includes(task.id);
+                  return (
+                    <button
+                      key={task.id}
+                      onClick={() => toggle(task.id)}
+                      className="w-full flex items-center gap-3 text-left py-1.5 rounded-[6px] px-2 transition-colors group"
+                      onMouseEnter={e => (e.currentTarget.style.background = 'var(--rh-surface-2)')}
+                      onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}
+                    >
+                      <span style={{ color: done ? '#15803d' : 'var(--rh-text-3)' }}>
+                        {done ? <CheckSquare size={15} /> : <Square size={15} />}
+                      </span>
+                      <span
+                        className={`text-sm transition-colors ${done ? 'line-through' : ''}`}
+                        style={{ color: done ? 'var(--rh-text-3)' : 'var(--rh-text-2)' }}
+                      >
+                        {task.text}
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
               <button
                 onClick={reset}
-                className="flex items-center gap-1.5 text-xs text-slate-600 hover:text-slate-400 mt-2 transition-colors"
+                className="flex items-center gap-1.5 text-xs mt-2 transition-colors"
+                style={{ color: 'var(--rh-text-3)' }}
+                onMouseEnter={e => (e.currentTarget.style.color = 'var(--rh-text-2)')}
+                onMouseLeave={e => (e.currentTarget.style.color = 'var(--rh-text-3)')}
               >
                 <RotateCcw size={11} /> Reset for today
               </button>

@@ -233,7 +233,7 @@ export default function App() {
   };
 
   return (
-    <div className={`flex h-screen overflow-hidden ${settings.theme === 'dark' ? 'bg-navy-900 text-white' : 'bg-[#EDEEF8] text-slate-900'}`}>
+    <div className="flex h-screen overflow-hidden" style={{ background: 'var(--rh-bg)', color: 'var(--rh-text-1)' }}>
       <Sidebar
         currentPage={currentPage}
         onNavigate={setCurrentPage}

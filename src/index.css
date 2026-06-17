@@ -1,15 +1,98 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+/* ── Vercel Design System — CSS Custom Properties ───────────────────────
+   Light mode (default) on :root, dark mode on .dark class.
+   All components reference these variables so a single class toggle
+   flips the entire colour system.
+─────────────────────────────────────────────────────────────────────── */
+:root {
+  /* Surfaces */
+  --rh-bg:        #fafafa;    /* canvas-soft  */
+  --rh-surface:   #ffffff;    /* canvas       */
+  --rh-surface-2: #f5f5f5;   /* canvas-soft-2 */
+
+  /* Borders */
+  --rh-border:        #ebebeb;
+  --rh-border-strong: #a1a1a1;
+
+  /* Text */
+  --rh-text-1: #171717;   /* ink    */
+  --rh-text-2: #4d4d4d;   /* body   */
+  --rh-text-3: #888888;   /* mute   */
+
+  /* Accent / Link */
+  --rh-accent:      #171717;   /* ink primary */
+  --rh-accent-text: #ffffff;
+  --rh-link:        #0070f3;
+
+  /* Code blocks */
+  --rh-code-bg:   #f5f5f5;
+  --rh-code-text: #0070f3;
+
+  /* Elevation (Vercel stacked shadow) */
+  --rh-shadow-card: 0px 1px 1px rgba(0,0,0,0.03), 0px 2px 2px rgba(0,0,0,0.04);
+  --rh-shadow-modal: 0px 1px 1px rgba(0,0,0,0.03), 0px 8px 16px -4px rgba(0,0,0,0.06), 0px 24px 32px -8px rgba(0,0,0,0.08);
+
+  /* Status colours (light) */
+  --rh-success-bg:  #dcfce7;
+  --rh-success-text: #15803d;
+  --rh-success-border: #bbf7d0;
+  --rh-error-bg:   #fee2e2;
+  --rh-error-text: #b91c1c;
+  --rh-warn-bg:    #fef3c7;
+  --rh-warn-text:  #b45309;
+}
+
+.dark {
+  --rh-bg:        #0a0a0a;
+  --rh-surface:   #141414;
+  --rh-surface-2: #1a1a1a;
+
+  --rh-border:        rgba(255,255,255,0.08);
+  --rh-border-strong: rgba(255,255,255,0.18);
+
+  --rh-text-1: #ededed;
+  --rh-text-2: #a3a3a3;
+  --rh-text-3: #737373;
+
+  --rh-accent:      #ededed;
+  --rh-accent-text: #0a0a0a;
+  --rh-link:        #5ba2f5;
+
+  --rh-code-bg:   #1a1a1a;
+  --rh-code-text: #50e3c2;
+
+  --rh-shadow-card:  none;
+  --rh-shadow-modal: 0px 1px 1px rgba(0,0,0,0.2), 0px 8px 16px -4px rgba(0,0,0,0.4);
+
+  --rh-success-bg:   rgba(21,128,61,0.15);
+  --rh-success-text: #4ade80;
+  --rh-success-border: rgba(74,222,128,0.2);
+  --rh-error-bg:   rgba(185,28,28,0.15);
+  --rh-error-text: #f87171;
+  --rh-warn-bg:    rgba(180,83,9,0.15);
+  --rh-warn-text:  #fbbf24;
+}
+
+/* ── Base ─────────────────────────────────────────────────────────────── */
 @layer base {
-  * {
-    box-sizing: border-box;
+  * { box-sizing: border-box; }
+
+  html {
+    -webkit-text-size-adjust: 100%;
   }
 
   body {
     margin: 0;
-    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    font-size: 14px;
+    line-height: 20px;
+    background-color: var(--rh-bg);
+    color: var(--rh-text-1);
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
@@ -19,136 +102,344 @@
     min-height: 100vh;
   }
 
-  ::-webkit-scrollbar {
-    width: 6px;
-    height: 6px;
-  }
-  ::-webkit-scrollbar-track {
-    background: transparent;
-  }
-  ::-webkit-scrollbar-thumb {
-    background: #334155;
-    border-radius: 3px;
-  }
-  ::-webkit-scrollbar-thumb:hover {
-    background: #475569;
-  }
+  ::-webkit-scrollbar        { width: 5px; height: 5px; }
+  ::-webkit-scrollbar-track  { background: transparent; }
+  ::-webkit-scrollbar-thumb  { background: var(--rh-border-strong); border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--rh-text-3); }
 }
 
+/* ── Component utilities ─────────────────────────────────────────────── */
 @layer components {
-  .glass-card {
-    @apply bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl;
+
+  /* Card — white surface, hairline border, stacked shadow */
+  .rh-card {
+    background-color: var(--rh-surface);
+    border: 1px solid var(--rh-border);
+    border-radius: 8px;
+    box-shadow: var(--rh-shadow-card);
   }
-  .glass-card-hover {
-    @apply glass-card hover:bg-white/8 hover:border-white/20 transition-all duration-200;
+
+  .rh-card-hover {
+    background-color: var(--rh-surface);
+    border: 1px solid var(--rh-border);
+    border-radius: 8px;
+    box-shadow: var(--rh-shadow-card);
+    transition: box-shadow 0.15s, border-color 0.15s;
+  }
+  .rh-card-hover:hover {
+    border-color: var(--rh-border-strong);
+    box-shadow: 0px 2px 2px rgba(0,0,0,0.04), 0px 8px 8px -8px rgba(0,0,0,0.04), inset 0 0 0 1px rgba(0,0,0,0.08);
+  }
+
+  /* Input / textarea / select */
+  .rh-input {
+    background-color: var(--rh-surface) !important;
+    border: 1px solid var(--rh-border) !important;
+    color: var(--rh-text-1) !important;
+    border-radius: 6px;
+    height: 40px;
+    padding: 0 12px;
+    font-size: 14px;
+    font-family: 'Inter', sans-serif;
+    width: 100%;
+    outline: none;
+    transition: border-color 0.15s;
+  }
+  .rh-input:focus {
+    border-color: var(--rh-accent) !important;
+  }
+  .rh-input::placeholder {
+    color: var(--rh-text-3) !important;
+  }
+
+  .rh-textarea {
+    background-color: var(--rh-surface) !important;
+    border: 1px solid var(--rh-border) !important;
+    color: var(--rh-text-1) !important;
+    border-radius: 6px;
+    padding: 10px 12px;
+    font-size: 14px;
+    font-family: 'Inter', sans-serif;
+    width: 100%;
+    outline: none;
+    resize: none;
+    transition: border-color 0.15s;
+  }
+  .rh-textarea:focus {
+    border-color: var(--rh-accent) !important;
+  }
+  .rh-textarea::placeholder {
+    color: var(--rh-text-3) !important;
+  }
+
+  .rh-select {
+    background-color: var(--rh-surface) !important;
+    border: 1px solid var(--rh-border) !important;
+    color: var(--rh-text-1) !important;
+    border-radius: 6px;
+    height: 40px;
+    padding: 0 30px 0 12px;
+    font-size: 14px;
+    font-family: 'Inter', sans-serif;
+    outline: none;
+    appearance: none;
+    cursor: pointer;
+    transition: border-color 0.15s;
+  }
+  .rh-select:focus { border-color: var(--rh-accent) !important; }
+  .rh-select option {
+    background-color: var(--rh-surface);
+    color: var(--rh-text-1);
+  }
+
+  /* Buttons */
+  .rh-btn-ink {
+    @apply inline-flex items-center justify-center gap-2 px-4 py-2 rounded-pill text-sm font-medium transition-all duration-150;
+    background-color: var(--rh-accent);
+    color: var(--rh-accent-text);
+  }
+  .rh-btn-ink:hover { opacity: 0.85; }
+
+  .rh-btn-outline {
+    @apply inline-flex items-center justify-center gap-2 px-4 py-2 rounded-pill text-sm font-medium transition-all duration-150;
+    background-color: var(--rh-surface);
+    color: var(--rh-text-1);
+    border: 1px solid var(--rh-border);
+  }
+  .rh-btn-outline:hover { border-color: var(--rh-border-strong); }
+
+  .rh-btn-ghost {
+    @apply inline-flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-[6px] text-sm font-medium transition-colors duration-150;
+    color: var(--rh-text-2);
+  }
+  .rh-btn-ghost:hover {
+    background-color: var(--rh-surface-2);
+    color: var(--rh-text-1);
+  }
+
+  /* Badge */
+  .rh-badge {
+    @apply inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium;
+    background-color: var(--rh-surface-2);
+    color: var(--rh-text-2);
+    border: 1px solid var(--rh-border);
+  }
+
+  /* Code / search string block */
+  .rh-code {
+    background-color: var(--rh-code-bg);
+    color: var(--rh-code-text);
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-size: 13px;
+    line-height: 1.6;
+    border-radius: 6px;
+    padding: 12px 16px;
+    border: 1px solid var(--rh-border);
+  }
+
+  /* Legacy glassmorphism helpers kept for backwards-compat */
+  .glass-card {
+    background-color: var(--rh-surface);
+    border: 1px solid var(--rh-border);
+    border-radius: 12px;
+    box-shadow: var(--rh-shadow-card);
   }
   .btn-primary {
-    @apply bg-blue-600 hover:bg-blue-500 text-white text-sm font-medium px-3 py-1.5 rounded-lg transition-colors duration-150 flex items-center gap-1.5;
+    @apply inline-flex items-center gap-1.5 text-sm font-medium px-3 py-1.5 rounded-[6px] transition-colors duration-150;
+    background-color: var(--rh-accent);
+    color: var(--rh-accent-text);
   }
   .btn-secondary {
-    @apply bg-white/10 hover:bg-white/20 text-slate-300 text-sm font-medium px-3 py-1.5 rounded-lg transition-colors duration-150 flex items-center gap-1.5;
+    @apply inline-flex items-center gap-1.5 text-sm font-medium px-3 py-1.5 rounded-[6px] transition-colors duration-150;
+    background-color: var(--rh-surface-2);
+    color: var(--rh-text-2);
+    border: 1px solid var(--rh-border);
   }
   .btn-ghost {
-    @apply hover:bg-white/10 text-slate-400 hover:text-slate-200 p-1.5 rounded-lg transition-colors duration-150;
+    @apply inline-flex items-center gap-1.5 text-sm p-1.5 rounded-[6px] transition-colors duration-150;
+    color: var(--rh-text-3);
+  }
+  .btn-ghost:hover {
+    background-color: var(--rh-surface-2);
+    color: var(--rh-text-1);
   }
 }
 
-/* ─── Light Mode Overrides ──────────────────────────────────────────────
-   Theme: Authjob-inspired — lavender background, white cards, pastel tags.
-   Scoped to .rh-content to avoid touching the sidebar (handled via Sidebar.tsx).
-   Text overrides exclude elements with a bg-* class (coloured buttons keep
-   their white labels).
-──────────────────────────────────────────────────────────────────────── */
+/* ── rh-content scope: remap glassmorphism → Vercel design ──────────────
+   These overrides translate every legacy bg-white/*, border-white/*,
+   text-white / text-slate-* class to the CSS variable palette.
+   Surfaces use variables (automatic light/dark), text overrides are
+   light-mode-only (dark mode text is already correct from tailwind).
+─────────────────────────────────────────────────────────────────────── */
 
-/* Text colours */
-html:not(.dark) .rh-content .text-white:not([class*="bg-"])    { color: #1e2040; }
-html:not(.dark) .rh-content .text-slate-100:not([class*="bg-"])  { color: #1e2040; }
-html:not(.dark) .rh-content .text-slate-200:not([class*="bg-"])  { color: #2e3060; }
-html:not(.dark) .rh-content .text-slate-300:not([class*="bg-"])  { color: #424470; }
-html:not(.dark) .rh-content .text-slate-400:not([class*="bg-"])  { color: #6b6c8a; }
-html:not(.dark) .rh-content .text-slate-500:not([class*="bg-"])  { color: #8b8ca8; }
-html:not(.dark) .rh-content .text-slate-600:not([class*="bg-"])  { color: #a8a9c0; }
-html:not(.dark) .rh-content .text-slate-700:not([class*="bg-"])  { color: #c8c9d8; }
-
-/* Search string / code text */
-html:not(.dark) .rh-content .text-blue-300:not([class*="bg-"]) { color: #1e40af; }
-html:not(.dark) .rh-content pre { color: #1e3a8a !important; }
-
-/* ── Card surfaces: white + shadow ───────────────────────────────────── */
-html:not(.dark) .rh-content .bg-white\/5 {
-  background-color: #ffffff !important;
-  box-shadow: 0 2px 10px rgba(100, 100, 180, 0.08), 0 1px 3px rgba(80, 80, 160, 0.05) !important;
+/* ─── Card / panel surfaces ─────────────────────────────────────────── */
+.rh-content .bg-white\/5,
+.rh-content .bg-white\/3 {
+  background-color: var(--rh-surface) !important;
+  box-shadow: var(--rh-shadow-card) !important;
 }
-html:not(.dark) .rh-content .bg-white\/3  { background-color: #f7f7fd !important; }
-html:not(.dark) .rh-content .bg-white\/8  { background-color: #f0f0fa !important; }
-html:not(.dark) .rh-content .bg-white\/10 { background-color: #e8e8f4 !important; }
-html:not(.dark) .rh-content .bg-white\/12 { background-color: #e4e4f0 !important; }
-html:not(.dark) .rh-content .bg-white\/15 { background-color: #e0e0ec !important; }
-html:not(.dark) .rh-content .bg-white\/20 { background-color: #d8d8e8 !important; }
-
-/* Hover states */
-html:not(.dark) .rh-content .hover\:bg-white\/8:hover  { background-color: #ededf8 !important; }
-html:not(.dark) .rh-content .hover\:bg-white\/10:hover { background-color: #e4e4f2 !important; }
-html:not(.dark) .rh-content .hover\:bg-white\/12:hover { background-color: #e0e0ee !important; }
-html:not(.dark) .rh-content .hover\:bg-white\/15:hover { background-color: #dcdcec !important; }
-html:not(.dark) .rh-content .hover\:bg-white\/20:hover { background-color: #d4d4e4 !important; }
-
-/* Code / search string block */
-html:not(.dark) .rh-content .bg-navy-950\/60 {
-  background-color: #eef2ff !important;
+.rh-content .bg-white\/8,
+.rh-content .bg-white\/10,
+.rh-content .bg-white\/12,
+.rh-content .bg-white\/15 {
+  background-color: var(--rh-surface-2) !important;
+}
+.rh-content .bg-white\/20 {
+  background-color: var(--rh-surface-2) !important;
+}
+.rh-content .hover\:bg-white\/8:hover,
+.rh-content .hover\:bg-white\/10:hover,
+.rh-content .hover\:bg-white\/12:hover,
+.rh-content .hover\:bg-white\/15:hover,
+.rh-content .hover\:bg-white\/20:hover {
+  background-color: var(--rh-surface-2) !important;
 }
 
-/* ── Borders ─────────────────────────────────────────────────────────── */
-html:not(.dark) .rh-content .border-white\/8  { border-color: #e4e5f2 !important; }
-html:not(.dark) .rh-content .border-white\/10 { border-color: #dddff0 !important; }
-html:not(.dark) .rh-content .border-white\/15 { border-color: #d4d6ec !important; }
-html:not(.dark) .rh-content .border-white\/20 { border-color: #cbcde6 !important; }
+/* Dark mode inversion for hover-card backgrounds */
+.dark .rh-content .hover\:bg-white\/3:hover { background-color: rgba(255,255,255,0.03) !important; }
 
-/* Hover border */
-html:not(.dark) .rh-content .hover\:border-white\/20:hover { border-color: #b8bbdc !important; }
+/* Navy code block → rh-code-bg */
+.rh-content .bg-navy-950\/60 {
+  background-color: var(--rh-code-bg) !important;
+}
 
-/* ── Accent colours: buttons and tags go pastel in light mode ─────────── */
+/* ─── Borders ─────────────────────────────────────────────────────────── */
+.rh-content .border-white\/5,
+.rh-content .border-white\/8,
+.rh-content .border-white\/10,
+.rh-content .border-white\/15,
+.rh-content .border-white\/20 {
+  border-color: var(--rh-border) !important;
+}
+.rh-content .hover\:border-white\/20:hover {
+  border-color: var(--rh-border-strong) !important;
+}
 
-/* Blue accent (Copy button, LinkedIn button, bookmark active) */
-html:not(.dark) .rh-content .bg-blue-600\/20  { background-color: #e8eeff !important; }
-html:not(.dark) .rh-content .bg-blue-500\/10  { background-color: #eef2ff !important; }
-html:not(.dark) .rh-content .border-blue-500\/30 { border-color: #c7d2fe !important; }
-html:not(.dark) .rh-content .border-blue-500\/20 { border-color: #dde5ff !important; }
-html:not(.dark) .rh-content .text-blue-400:not([class*="bg-"]) { color: #3b5bdb !important; }
-html:not(.dark) .rh-content .text-blue-300:not([class*="bg-"]) { color: #1e40af !important; }
-html:not(.dark) .rh-content .hover\:bg-blue-600\/30:hover { background-color: #dde5ff !important; }
-html:not(.dark) .rh-content .hover\:bg-blue-500\/20:hover { background-color: #e8eeff !important; }
+/* Dark bg (slate-800/900) surfaces → light mode override */
+html:not(.dark) .rh-content .bg-slate-900,
+html:not(.dark) .rh-content .bg-slate-800 {
+  background-color: var(--rh-surface) !important;
+}
+html:not(.dark) .rh-content .border-slate-600,
+html:not(.dark) .rh-content .border-slate-700 {
+  border-color: var(--rh-border) !important;
+}
+/* Dark cards used in tracker columns */
+html:not(.dark) .rh-content .bg-white\/3 {
+  background-color: var(--rh-surface) !important;
+}
 
-/* Orange accent (Google / Search button) */
-html:not(.dark) .rh-content .bg-orange-500\/10  { background-color: #fff4ec !important; }
+/* ─── Text colours (light mode only: dark text is fine as-is) ─────────── */
+html:not(.dark) .rh-content .text-white:not([class*="bg-blue"]):not([class*="bg-emerald"]):not([class*="bg-red"]):not([class*="bg-orange"]):not([class*="bg-purple"]):not([class*="bg-yellow"]):not([class*="bg-ink"]):not([class*="bg-ds-"]) {
+  color: var(--rh-text-1) !important;
+}
+html:not(.dark) .rh-content .text-slate-100:not([class*="bg-"]),
+html:not(.dark) .rh-content .text-slate-200:not([class*="bg-"]) {
+  color: var(--rh-text-1) !important;
+}
+html:not(.dark) .rh-content .text-slate-300:not([class*="bg-"]) {
+  color: var(--rh-text-2) !important;
+}
+html:not(.dark) .rh-content .text-slate-400:not([class*="bg-"]) {
+  color: var(--rh-text-2) !important;
+}
+html:not(.dark) .rh-content .text-slate-500:not([class*="bg-"]) {
+  color: var(--rh-text-3) !important;
+}
+html:not(.dark) .rh-content .text-slate-600:not([class*="bg-"]) {
+  color: var(--rh-text-3) !important;
+}
+html:not(.dark) .rh-content .text-slate-700:not([class*="bg-"]) {
+  color: var(--rh-border-strong) !important;
+}
+
+/* Code text in code blocks */
+html:not(.dark) .rh-content .bg-navy-950\/60 *,
+html:not(.dark) .rh-content pre {
+  color: var(--rh-code-text) !important;
+}
+/* Keep blue-300 inside code blocks as link color */
+html:not(.dark) .rh-content .text-blue-300:not([class*="bg-"]):not(pre *) {
+  color: var(--rh-link) !important;
+}
+
+/* ─── Accent colours: pastel → clean semantic in light mode ─────────── */
+/* Blue */
+html:not(.dark) .rh-content .bg-blue-600\/20  { background-color: #eff6ff !important; }
+html:not(.dark) .rh-content .bg-blue-500\/10  { background-color: #eff6ff !important; }
+html:not(.dark) .rh-content .border-blue-500\/30,
+html:not(.dark) .rh-content .border-blue-500\/20 { border-color: #bfdbfe !important; }
+html:not(.dark) .rh-content .text-blue-400:not([class*="bg-"]) { color: #1d4ed8 !important; }
+html:not(.dark) .rh-content .text-blue-300:not([class*="bg-"]) { color: var(--rh-link) !important; }
+html:not(.dark) .rh-content .hover\:bg-blue-600\/30:hover { background-color: #dbeafe !important; }
+html:not(.dark) .rh-content .hover\:bg-blue-500\/20:hover { background-color: #dbeafe !important; }
+
+/* Emerald / green */
+html:not(.dark) .rh-content .bg-emerald-500\/10 { background-color: #f0fdf4 !important; }
+html:not(.dark) .rh-content .border-emerald-500\/20 { border-color: #bbf7d0 !important; }
+html:not(.dark) .rh-content .text-emerald-400:not([class*="bg-"]) { color: #15803d !important; }
+html:not(.dark) .rh-content .text-emerald-300:not([class*="bg-"]) { color: #15803d !important; }
+html:not(.dark) .rh-content .hover\:bg-emerald-500\/20:hover { background-color: #dcfce7 !important; }
+html:not(.dark) .rh-content .bg-emerald-500\/5 { background-color: #f7fef9 !important; }
+
+/* Orange */
+html:not(.dark) .rh-content .bg-orange-500\/10  { background-color: #fff7ed !important; }
 html:not(.dark) .rh-content .border-orange-500\/20 { border-color: #fed7aa !important; }
 html:not(.dark) .rh-content .text-orange-400:not([class*="bg-"]) { color: #c2410c !important; }
-html:not(.dark) .rh-content .hover\:bg-orange-500\/20:hover { background-color: #ffe8d4 !important; }
+html:not(.dark) .rh-content .hover\:bg-orange-500\/20:hover { background-color: #ffedd5 !important; }
 
-/* Green accent (High quality / emerald) */
-html:not(.dark) .rh-content .bg-emerald-400\/10  { background-color: #e8faf2 !important; }
-html:not(.dark) .rh-content .text-emerald-400:not([class*="bg-"]) { color: #047857 !important; }
-html:not(.dark) .rh-content .bg-emerald-500\/10  { background-color: #dcfce7 !important; }
-html:not(.dark) .rh-content .border-emerald-500\/20 { border-color: #a7f3d0 !important; }
-html:not(.dark) .rh-content .text-emerald-400 { color: #047857 !important; }
-
-/* Yellow accent (medium quality) */
+/* Yellow */
 html:not(.dark) .rh-content .bg-yellow-400\/10  { background-color: #fefce8 !important; }
 html:not(.dark) .rh-content .text-yellow-400:not([class*="bg-"]) { color: #b45309 !important; }
+html:not(.dark) .rh-content .text-yellow-300:not([class*="bg-"]) { color: #b45309 !important; }
 
-/* Red accent (difficulty hard / clear button) */
-html:not(.dark) .rh-content .bg-red-500\/10   { background-color: #fff1f2 !important; }
-html:not(.dark) .rh-content .border-red-500\/20 { border-color: #fecdd3 !important; }
-html:not(.dark) .rh-content .text-red-400:not([class*="bg-"]) { color: #be123c !important; }
+/* Red */
+html:not(.dark) .rh-content .bg-red-500\/10   { background-color: #fef2f2 !important; }
+html:not(.dark) .rh-content .border-red-500\/20 { border-color: #fecaca !important; }
+html:not(.dark) .rh-content .text-red-400:not([class*="bg-"]) { color: #b91c1c !important; }
 
-/* Purple accent (Posts tab badge) */
-html:not(.dark) .rh-content .bg-purple-500\/10  { background-color: #f5f3ff !important; }
-html:not(.dark) .rh-content .border-purple-500\/20 { border-color: #ddd6fe !important; }
+/* Purple */
+html:not(.dark) .rh-content .bg-purple-500\/10  { background-color: #faf5ff !important; }
+html:not(.dark) .rh-content .border-purple-500\/20 { border-color: #e9d5ff !important; }
 html:not(.dark) .rh-content .text-purple-400:not([class*="bg-"]) { color: #7c3aed !important; }
+html:not(.dark) .rh-content .text-purple-300:not([class*="bg-"]) { color: #7c3aed !important; }
 
-/* Progress bar track */
-html:not(.dark) .rh-content .bg-white\/10.h-1 { background-color: #e0e0ec !important; }
+/* ─── Form inputs: dark slate → clean light inputs ───────────────────── */
+html:not(.dark) .rh-content input[class*="bg-slate"],
+html:not(.dark) .rh-content select[class*="bg-slate"],
+html:not(.dark) .rh-content textarea[class*="bg-slate"] {
+  background-color: var(--rh-surface) !important;
+  border-color: var(--rh-border) !important;
+  color: var(--rh-text-1) !important;
+}
+html:not(.dark) .rh-content input[class*="bg-slate"]::placeholder,
+html:not(.dark) .rh-content textarea[class*="bg-slate"]::placeholder {
+  color: var(--rh-text-3) !important;
+}
 
-/* ── Scrollbar ───────────────────────────────────────────────────────── */
-html:not(.dark) ::-webkit-scrollbar-thumb       { background: #c4c5d8; }
-html:not(.dark) ::-webkit-scrollbar-thumb:hover { background: #9a9bb4; }
+/* ─── Table overrides ─────────────────────────────────────────────────── */
+html:not(.dark) .rh-content .border-white\/5 {
+  border-color: var(--rh-border) !important;
+}
+html:not(.dark) .rh-content .hover\:bg-white\/3:hover {
+  background-color: var(--rh-surface-2) !important;
+}
+
+/* ─── Tracker column colours in light mode ────────────────────────────── */
+html:not(.dark) .rh-content .border-slate-500\/30 { border-color: #e2e8f0 !important; }
+html:not(.dark) .rh-content .border-blue-500\/30  { border-color: #bfdbfe !important; }
+html:not(.dark) .rh-content .border-yellow-500\/30 { border-color: #fde68a !important; }
+html:not(.dark) .rh-content .border-emerald-500\/30 { border-color: #a7f3d0 !important; }
+
+/* Status badge adjustments */
+html:not(.dark) .rh-content .bg-blue-500\/20 { background-color: #eff6ff !important; }
+html:not(.dark) .rh-content .border-blue-500\/30 { border-color: #93c5fd !important; }
+html:not(.dark) .rh-content .bg-yellow-500\/10 { background-color: #fefce8 !important; }
+html:not(.dark) .rh-content .border-yellow-500\/30 { border-color: #fde68a !important; }
+html:not(.dark) .rh-content .bg-emerald-500\/20 { background-color: #f0fdf4 !important; }
+html:not(.dark) .rh-content .bg-slate-500\/20 { background-color: #f8fafc !important; }
+html:not(.dark) .rh-content .border-slate-500\/30 { border-color: #e2e8f0 !important; }
+
+/* ─── bg-white\/8 used in progress bar track ────────────────────────── */
+html:not(.dark) .rh-content .bg-white\/10.h-1 { background-color: #e5e7eb !important; }
+html:not(.dark) .rh-content .bg-white\/10 { background-color: var(--rh-surface-2) !important; }
